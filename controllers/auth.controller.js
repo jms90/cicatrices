@@ -1,0 +1,85 @@
+var jwt = require("jsonwebtoken");
+var bcrypt = require("bcrypt");
+var User = require("../models/user");
+
+exports.signup = (req, res) => {
+    const user = new User({
+        fullName: req.body.fullName,
+        email: req.body.email,
+        role: req.body.role,
+        password: bcrypt.hashSync(req.body.password, 8)
+    });
+    console.log("DENTRO DE SIGNUP");
+    console.log(user);
+    console.log("------------------");
+    console.log(req.body);
+
+    user.save((err, user) => {
+        if (err) {
+            console.log("--------ERROR---------");
+            console.log(err);
+            res.status(500)
+                .send({
+                    message: "nada"
+                });
+            return;
+        } else {
+            res.status(200)
+                .send({
+                    message: "Usuario registrado correctamente"
+                })
+        }
+    });
+};
+
+exports.signin = (req, res) => {
+    User.findOne({
+        email: req.body.email
+    }).exec((err, user) => {
+        if (err) {
+            res.status(500)
+                .send({
+                    message: err
+                });
+            return;
+        }
+        if (!user) {
+            return res.status(404)
+                .send({
+                    message: "User Not found."
+                });
+        }
+
+        //comparing passwords
+        var passwordIsValid = bcrypt.compareSync(
+            req.body.password,
+            user.password
+        );
+        // checking if password was valid and send response accordingly
+        if (!passwordIsValid) {
+            return res.status(401)
+                .send({
+                    accessToken: null,
+                    message: "Usuario o ontraseña incorrecta!"
+                });
+        }
+        //signing token with user 
+        var token = jwt.sign({
+            id: user.id
+        }, process.env.API_SECRET, {
+            expiresIn: 86400
+        });
+        console.log("TOKEN: " + token);
+        //responding to client request with user profile success message and  access token .
+        res.status(200)
+            .send({
+                user: {
+                    id: user._id,
+                    email: user.email,
+                    fullName: user.fullName,
+                },
+                message: "Login correcto",
+                accessToken: token,
+            });
+    });
+};
