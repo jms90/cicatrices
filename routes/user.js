@@ -11,8 +11,6 @@ router.post("/register", signup);
 router.post("/login", signin);
 
 router.get("/hiddencontent", verifyToken, function (req, res) {
-  console.log("DENTRO DE HIDDEN CONTENT");
-  console.log(req.user);
   if (!req.user) {
     res.status(403)
       .send({
@@ -27,7 +25,7 @@ router.get("/hiddencontent", verifyToken, function (req, res) {
   } else {
     res.status(403)
       .send({
-        message: "Unauthorised access"
+        message: "Unauthorized access"
       });
   }
 });

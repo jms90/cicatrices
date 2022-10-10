@@ -27,5 +27,5 @@ app.use(userRoutes);
 
 //setup server to listen on port 8080
 app.listen(process.env.PORT || 8091, () => {
-    console.log("Server is live on port 8080");
+    console.log(`Server is live on port ${process.env.PORT || 8091}`);
 })

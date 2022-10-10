@@ -26,7 +26,7 @@ var userSchema = new Schema({
     role: {
         type: String,
         enum: ["normal", "admin"],
-        required: [true, "un rolete?"]
+        required: [true, "No se ha establecido un rol..."]
     },
     password: {
         type: String,

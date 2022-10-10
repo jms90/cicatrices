@@ -9,15 +9,9 @@ exports.signup = (req, res) => {
         role: req.body.role,
         password: bcrypt.hashSync(req.body.password, 8)
     });
-    console.log("DENTRO DE SIGNUP");
-    console.log(user);
-    console.log("------------------");
-    console.log(req.body);
 
     user.save((err, user) => {
         if (err) {
-            console.log("--------ERROR---------");
-            console.log(err);
             res.status(500)
                 .send({
                     message: "nada"
@@ -60,7 +54,7 @@ exports.signin = (req, res) => {
             return res.status(401)
                 .send({
                     accessToken: null,
-                    message: "Usuario o ontraseña incorrecta!"
+                    message: "Usuario o contraseña incorrecta!"
                 });
         }
         //signing token with user 
@@ -69,7 +63,7 @@ exports.signin = (req, res) => {
         }, process.env.API_SECRET, {
             expiresIn: 86400
         });
-        console.log("TOKEN: " + token);
+        
         //responding to client request with user profile success message and  access token .
         res.status(200)
             .send({
